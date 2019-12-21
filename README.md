@@ -1,6 +1,6 @@
 # Go V4 Signature in Lambda
 
-As [described in my post](https://blog.mikedalrymple.com), this is a simple project that illustrates how to get `Credentials` from a `session.Session` so you can can create a `v4.Signer` and then sign a request all from within an AWS Lambda function.
+As [described in my post](https://blog.mikedalrymple.com/2019/12/20/v4-signatures-with-go-on-lambda/), this is a simple project that illustrates how to get `Credentials` from a `session.Session` so you can can create a `v4.Signer` and then sign a request all from within an AWS Lambda function.
 
 ## Running Locally
 
