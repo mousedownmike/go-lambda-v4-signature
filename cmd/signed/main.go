@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	v4 "github.com/aws/aws-sdk-go/aws/signer/v4"
 	"io/ioutil"
@@ -25,8 +24,14 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed creating session: %s", err)
 	}
+	signer := v4.NewSigner(awsSess.Config.Credentials)
 
-	bl := NewBucketLister(S3Endpoint, S3Region, awsSess.Config.Credentials)
+	bl := &BucketLister{
+		endpoint: S3Endpoint,
+		region:   S3Region,
+		signer:   signer,
+		client:    &http.Client{},
+	}
 
 	// If this environment variable is set, assume we're running in a Lambda
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") != "" {
@@ -42,16 +47,6 @@ func handleList(bl *BucketLister) func() {
 		if err != nil {
 			log.Fatalf("failed: %s", err)
 		}
-	}
-}
-
-func NewBucketLister(endpoint, region string, creds *credentials.Credentials) *BucketLister {
-	s := v4.NewSigner(creds)
-	return &BucketLister{
-		endpoint: endpoint,
-		region:   region,
-		signer:   s,
-		client:   &http.Client{},
 	}
 }
 
