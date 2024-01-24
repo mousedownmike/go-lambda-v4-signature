@@ -5,7 +5,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
 	v4 "github.com/aws/aws-sdk-go/aws/signer/v4"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -30,7 +30,7 @@ func main() {
 		endpoint: S3Endpoint,
 		region:   S3Region,
 		signer:   signer,
-		client:    &http.Client{},
+		client:   &http.Client{},
 	}
 
 	// If this environment variable is set, assume we're running in a Lambda
@@ -57,8 +57,8 @@ type BucketLister struct {
 	client   *http.Client
 }
 
-/**
-Log all the buckets available to the assumed role.
+/*
+List buckets available to the assumed role.
 */
 func (b *BucketLister) List() error {
 	url := fmt.Sprintf("https://%s/", b.endpoint)
@@ -76,8 +76,10 @@ func (b *BucketLister) List() error {
 	if err != nil {
 		return fmt.Errorf("error making request: %w", err)
 	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("error reading resposne: %w", err)
 	}
