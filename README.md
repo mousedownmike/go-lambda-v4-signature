@@ -22,12 +22,12 @@ zip signed.zip signed
 These are the basic steps to create the function using the console.  If you're here, you probably already know how to do this, there's nothing special about this project.
 
 1. Choose **Create Function**
-1. Select **Author from scratch**
-  * Function name: `bucketlist`
-  * Runtime `Go 1.x`
-1. Select **Create Function**
-1. Select your `signed.zip` file after selecting the **Upload** button.
-1. In the **Handler** field enter `signed`
-1. Select the **Save** button in the top right.
+2. Select **Author from scratch**
+   * Function name: `bucketlist`
+   * Runtime `Go 1.x`
+3. Select **Create Function**
+4. Select your `signed.zip` file after selecting the **Upload** button.
+5. In the **Handler** field enter `signed`
+6. Select the **Save** button in the top right.
 
 The function doesn't expect any input so you can configure a simple test event (e.g. `{}`) and run the function by clicking the **Test** button.  The function will succeed but the output will show that access was denied.  You need to add the `s3:ListAllMyBuckets` policy action to your newly created role.  Run the test again and you'll see the bucket list. 
