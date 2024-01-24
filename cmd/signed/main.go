@@ -57,9 +57,9 @@ type BucketLister struct {
 	client   *http.Client
 }
 
-/**
- * List buckets
- */
+/*
+List buckets available to the assumed role.
+*/
 func (b *BucketLister) List() error {
 	url := fmt.Sprintf("https://%s/", b.endpoint)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -76,7 +76,9 @@ func (b *BucketLister) List() error {
 	if err != nil {
 		return fmt.Errorf("error making request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(resp.Body)
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("error reading resposne: %w", err)
